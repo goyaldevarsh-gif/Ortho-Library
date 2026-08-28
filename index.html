@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Ortho Library - Your personal surgical knowledge hub">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ortho Library">
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23333333' width='192' height='192'/><text x='96' y='120' font-size='100' font-weight='bold' fill='white' text-anchor='middle' font-family='system-ui'>📚</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23ffffff' width='180' height='180' rx='40'/><text x='90' y='135' font-size='90' text-anchor='middle'>📚</text></svg>">
+    
+    <title>Ortho Library</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 2px solid #333;
+            padding: 16px 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            padding: 10px 16px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        button.secondary {
+            background: #666;
+        }
+
+        button.secondary:hover {
+            background: #888;
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .controls {
+            background: #ffffff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .control-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        input[type="text"], select {
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff;
+            color: #1a1a1a;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        select {
+            min-width: 150px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 4px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="url"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .rating-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .star {
+            font-size: 28px;
+            cursor: pointer;
+            color: #ddd;
+            transition: color 0.2s;
+        }
+
+        .star.active {
+            color: #ffc107;
+        }
+
+        .star:hover {
+            color: #ffc107;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .modal-footer button {
+            flex: 1;
+        }
+
+        .library-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .sidebar {
+            width: 200px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-item {
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background: #f0f0f0;
+        }
+
+        .sidebar-item.active {
+            background: #333;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .main-content-area {
+            flex: 1;
+        }
+
+        .resource-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #333;
+        }
+
+        .resource-item {
+            background: #fff;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            border-left: 4px solid #333;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .resource-item:hover {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .resource-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .resource-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 13px;
+            word-break: break-all;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .resource-link:hover {
+            text-decoration: underline;
+        }
+
+        .resource-notes {
+            font-size: 13px;
+            color: #555;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 3px;
+        }
+
+        .resource-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .resource-meta span {
+            color: #666;
+        }
+
+        .stars {
+            color: #ffc107;
+            letter-spacing: 2px;
+        }
+
+        .resource-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .resource-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .resource-actions button:hover {
+            background: #e0e0e0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .install-prompt {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .install-prompt.show {
+            display: block;
+        }
+
+        .install-prompt button {
+            background: #2196F3;
+            padding: 8px 16px;
+            margin-left: 10px;
+        }
+
+        .install-prompt button:hover {
+            background: #1976D2;
+        }
+
+        @media (max-width: 768px) {
+            .library-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                display: flex;
+                gap: 20px;
+                overflow-x: auto;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .control-row {
+                flex-direction: column;
+            }
+
+            input[type="text"] {
+                min-width: 100%;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .export-menu {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: white;
+            border: 1px solid #333;
+            border-radius: 4px;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .export-menu button {
+            width: 200px;
+            text-align: left;
+            background: white;
+            color: #333;
+            border: none;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-weight: normal;
+            border-bottom: 1px solid #eee;
+        }
+
+        .export-menu button:last-child {
+            border-bottom: none;
+        }
+
+        .export-menu button:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="header-content">
+                <h1>📚 Ortho Library</h1>
+                <div class="header-actions">
+                    <button onclick="openAddModal()">+ Add</button>
+                    <button class="secondary" onclick="toggleExportMenu()">Export</button>
+                    <button class="secondary" onclick="openImportModal()">Import</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="container">
+                <div id="installPrompt" class="install-prompt">
+                    <span>📱 Install Ortho Library on your home screen</span>
+                    <button onclick="installApp()">Install</button>
+                </div>
+
+                <div class="success-message" id="successMessage"></div>
+
+                <div class="controls">
+                    <div class="control-row">
+                        <input type="text" id="searchInput" placeholder="Search resources..." onkeyup="filterResources()">
+                        <select id="regionFilter" onchange="filterResources()">
+                            <option value="">All Regions</option>
+                            <option value="knee">Knee</option>
+                            <option value="shoulder">Shoulder</option>
+                            <option value="hip">Hip</option>
+                            <option value="ankle">Ankle</option>
+                            <option value="wrist">Wrist/Hand</option>
+                            <option value="spine">Spine</option>
+                        </select>
+                        <select id="domainFilter" onchange="filterResources()">
+                            <option value="">All Domains</option>
+                            <option value="arthroscopy">Arthroscopy</option>
+                            <option value="arthroplasty">Arthroplasty</option>
+                            <option value="trauma">Trauma/Fixation</option>
+                            <option value="sports">Sports Medicine</option>
+                            <option value="rehab">Rehabilitation</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="stats" id="statsContainer"></div>
+
+                <div class="library-container">
+                    <div class="sidebar">
+                        <div class="sidebar-section">
+                            <div class="sidebar-title">Regions</div>
+                            <div class="sidebar-item" onclick="filterByRegion('')">All</div>
+                            <div class="sidebar-item" onclick="filterByRegion('knee')">Knee</div>
+                            <div class="sidebar-item" onclick="filterByRegion('shoulder')">Shoulder</div>
+                            <div class="sidebar-item" onclick="filterByRegion('hip')">Hip</div>
+                            <div class="sidebar-item" onclick="filterByRegion('ankle')">Ankle</div>
+                            <div class="sidebar-item" onclick="filterByRegion('wrist')">Wrist/Hand</div>
+                            <div class="sidebar-item" onclick="filterByRegion('spine')">Spine</div>
+                        </div>
+                    </div>
+
+                    <div class="main-content-area">
+                        <div id="libraryContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal" id="resourceModal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalTitle">Add Resource</div>
+            <form onsubmit="saveResource(event)">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="resourceTitle" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Link</label>
+                    <input type="url" id="resourceLink" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Region</label>
+                    <select id="resourceRegion" required>
+                        <option value="">Select Region</option>
+                        <option value="knee">Knee</option>
+                        <option value="shoulder">Shoulder</option>
+                        <option value="hip">Hip</option>
+                        <option value="ankle">Ankle</option>
+                        <option value="wrist">Wrist/Hand</option>
+                        <option value="spine">Spine</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Domain</label>
+                    <select id="resourceDomain" required>
+                        <option value="">Select Domain</option>
+                        <option value="arthroscopy">Arthroscopy</option>
+                        <option value="arthroplasty">Arthroplasty</option>
+                        <option value="trauma">Trauma/Fixation</option>
+                        <option value="sports">Sports Medicine</option>
+                        <option value="rehab">Rehabilitation</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="resourceNotes" placeholder="Add your insights..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="rating-group" id="ratingStars">
+                        <span class="star" onclick="setRating(1)">★</span>
+                        <span class="star" onclick="setRating(2)">★</span>
+                        <span class="star" onclick="setRating(3)">★</span>
+                        <span class="star" onclick="setRating(4)">★</span>
+                        <span class="star" onclick="setRating(5)">★</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit">Save</button>
+                    <button type="button" onclick="closeModal()" class="secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">Import Data</div>
+            <div class="form-group">
+                <label>Select JSON File</label>
+                <input type="file" id="importFile" accept=".json" style="padding: 8px;">
+            </div>
+            <div class="modal-footer">
+                <button onclick="importData()">Import</button>
+                <button onclick="closeImportModal()" class="secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Menu -->
+    <div id="exportMenu" class="export-menu hidden">
+        <button onclick="exportAsJSON()">📥 Export as JSON</button>
+        <button onclick="exportAsCSV()">📊 Export as CSV</button>
+    </div>
+
+    <script>
+        const DB_NAME = 'OrthoLibrary';
+        const STORE_NAME = 'resources';
+        let db;
+        let editingId = null;
+        let currentRating = 0;
+        let deferredPrompt;
+        let installPromptShown = false;
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed'));
+        }
+
+        // Install Prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallPrompt();
+        });
+
+        function showInstallPrompt() {
+            if (!installPromptShown) {
+                document.getElementById('installPrompt').classList.add('show');
+                installPromptShown = true;
+            }
+        }
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(choiceResult => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installPrompt').classList.remove('show');
+                });
+            }
+        }
+
+        // Initialize IndexedDB
+        function initDB() {
+            const request = indexedDB.open(DB_NAME, 1);
+            
+            request.onerror = () => console.error('Database failed to open');
+            
+            request.onsuccess = () => {
+                db = request.result;
+                loadLibrary();
+            };
+            
+            request.onupgradeneeded = (event) => {
+                db = event.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                }
+            };
+        }
+
+        // Load and display library
+        function loadLibrary() {
+            const transaction = db.transaction(STORE_NAME, 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.getAll();
+
+            request.onsuccess = () => {
+                displayLibrary(request.result);
+                updateStats(request.result);
+            };
+        }
+
+        // Display resources grouped by region
+        function displayLibrary(resources) {
+            const regionMap = {
+                knee: 'Knee',
+                shoulder: 'Shoulder',
+                hip: 'Hip',
+                ankle: 'Ankle',
+                wrist: 'Wrist/Hand',
+                spine: 'Spine'
+            };
+
+            const grouped = {};
+            resources.forEach(r => {
+                if (!grouped[r.region]) grouped[r.region] = [];
+                grouped[r.region].push(r);
+            });
+
+            let html = '';
+            Object.keys(grouped).sort().forEach(region => {
+                html += `<div class="resource-section">
+                    <div class="section-title">${regionMap[region]} (${grouped[region].length})</div>`;
+                
+                grouped[region].forEach(r => {
+                    html += `
+                        <div class="resource-item">
+                            <div class="resource-title">${r.title}</div>
+                            <a href="${r.link}" target="_blank" class="resource-link">${r.link}</a>
+                            <div class="resource-meta">
+                                <span><strong>Domain:</strong> ${r.domain}</span>
+                                <span class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+                            </div>
+                            ${r.notes ? `<div class="resource-notes"><strong>Notes:</strong> ${r.notes}</div>` : ''}
+                            <div class="resource-actions">
+                                <button onclick="editResource('${r.id}')">Edit</button>
+                                <button onclick="deleteResource('${r.id}')">Delete</button>
+                            </div>
+                        </div>`;
+                });
+                
+                html += '</div>';
+            });
+
+            document.getElementById('libraryContent').innerHTML = html || '<div class="empty-state"><p>No resources yet. Add your first resource!</p></div>';
+        }
+
+        // Update statistics
+        function updateStats(resources) {
+            const regionCounts = {};
+            resources.forEach(r => {
+                regionCounts[r.region] = (regionCounts[r.region] || 0) + 1;
+            });
+
+            let statsHtml = `
+                <div class="stat-card">
+                    <div class="stat-number">${resources.length}</div>
+                    <div class="stat-label">Total Resources</div>
+                </div>`;
+
+            Object.entries(regionCounts).forEach(([region, count]) => {
+                const regionMap = {knee: 'Knee', shoulder: 'Shoulder', hip: 'Hip', ankle: 'Ankle', wrist: 'Wrist', spine: 'Spine'};
+                statsHtml += `
+                    <div class="stat-card">
+                        <div class="stat-number">${count}</div>
+                        <div class="stat-label">${regionMap[region]}</div>
+                    </div>`;
+            });
+
+            document.getElementById('statsContainer').innerHTML = statsHtml;
+        }
+
+        // Filter resources
+        function filterResources() {
+            const transaction = db.transaction(STORE_NAME, 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.getAll();
+
+            request.onsuccess = () => {
+                let resources = request.result;
+                const search = document.getElementById('searchInput').value.toLowerCase();
+                const region = document.getElementById('regionFilter').value;
+                const domain = document.getElementById('domainFilter').value;
+
+                resources = resources.filter(r => 
+                    (search === '' || r.title.toLowerCase().includes(search)) &&
+                    (region === '' || r.region === region) &&
+                    (domain === '' || r.domain === domain)
+                );
+
+                displayLibrary(resources);
+            };
+        }
+
+        // Filter by sidebar region
+        function filterByRegion(region) {
+            document.getElementById('regionFilter').value = region;
+            filterResources();
+        }
+
+        // Open add modal
+        function openAddModal() {
+            editingId = null;
+            document.getElementById('modalTitle').textContent = 'Add Resource';
+            document.getElementById('resourceTitle').value = '';
+            document.getElementById('resourceLink').value = '';
+            document.getElementById('resourceRegion').value = '';
+            document.getElementById('resourceDomain').value = '';
+            document.getElementById('resourceNotes').value = '';
+            currentRating = 0;
+            updateStarDisplay();
+            document.getElementById('resourceModal').classList.add('active');
+        }
+
+        // Edit resource
+        function editResource(id) {
+            const transaction = db.transaction(STORE_NAME, 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.get(id);
+
+            request.onsuccess = () => {
+                const resource = request.result;
+                editingId = id;
+                document.getElementById('modalTitle').textContent = 'Edit Resource';
+                document.getElementById('resourceTitle').value = resource.title;
+                document.getElementById('resourceLink').value = resource.link;
+                document.getElementById('resourceRegion').value = resource.region;
+                document.getElementById('resourceDomain').value = resource.domain;
+                document.getElementById('resourceNotes').value = resource.notes;
+                currentRating = resource.rating;
+                updateStarDisplay();
+                document.getElementById('resourceModal').classList.add('active');
+            };
+        }
+
+        // Set rating
+        function setRating(rating) {
+            currentRating = rating;
+            updateStarDisplay();
+        }
+
+        // Update star display
+        function updateStarDisplay() {
+            document.querySelectorAll('#ratingStars .star').forEach((star, index) => {
+                star.classList.toggle('active', index < currentRating);
+            });
+        }
+
+        // Save resource
+        function saveResource(event) {
+            event.preventDefault();
+
+            const resource = {
+                id: editingId || Date.now().toString(),
+                title: document.getElementById('resourceTitle').value,
+                link: document.getElementById('resourceLink').value,
+                region: document.getElementById('resourceRegion').value,
+                domain: document.getElementById('resourceDomain').value,
+                notes: document.getElementById('resourceNotes').value,
+                rating: currentRating,
+                dateAdded: editingId ? undefined : new Date().toISOString(),
+                lastEdited: new Date().toISOString()
+            };
+
+            const transaction = db.transaction(STORE_NAME, 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            
+            if (editingId) {
+                const request = store.get(editingId);
+                request.onsuccess = () => {
+                    const existing = request.result;
+                    resource.dateAdded = existing.dateAdded;
+                    store.put(resource);
+                };
+            } else {
+                store.add(resource);
+            }
+
+            transaction.oncomplete = () => {
+                showSuccessMessage(editingId ? 'Resource updated!' : 'Resource added!');
+                closeModal();
+                loadLibrary();
+            };
+        }
+
+        // Delete resource
+        function deleteResource(id) {
+            if (confirm('Delete this resource?')) {
+                const transaction = db.transaction(STORE_NAME, 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                store.delete(id);
+
+                transaction.oncomplete = () => {
+                    showSuccessMessage('Resource deleted!');
+                    loadLibrary();
+                };
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('resourceModal').classList.remove('active');
+        }
+
+        // Export/Import
+        function toggleExportMenu() {
+            const menu = document.getElementById('exportMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function exportAsJSON() {
+            const transaction = db.transaction(STORE_NAME, 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.getAll();
+
+            request.onsuccess = () => {
+                const dataStr = JSON.stringify(request.result, null, 2);
+                downloadFile(dataStr, 'ortho-library.json', 'application/json');
+                document.getElementById('exportMenu').classList.add('hidden');
+            };
+        }
+
+        function exportAsCSV() {
+            const transaction = db.transaction(STORE_NAME, 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.getAll();
+
+            request.onsuccess = () => {
+                const resources = request.result;
+                let csv = 'Title,Region,Domain,Rating,Link,Notes,Date Added\n';
+                
+                resources.forEach(r => {
+                    csv += `"${r.title.replace(/"/g, '""')}","${r.region}","${r.domain}",${r.rating},"${r.link}","${(r.notes || '').replace(/"/g, '""')}","${new Date(r.dateAdded).toLocaleDateString()}"\n`;
+                });
+
+                downloadFile(csv, 'ortho-library.csv', 'text/csv');
+                document.getElementById('exportMenu').classList.add('hidden');
+            };
+        }
+
+        function downloadFile(content, filename, type) {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:' + type + ';charset=utf-8,' + encodeURIComponent(content));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        function openImportModal() {
+            document.getElementById('importModal').classList.add('active');
+        }
+
+        function closeImportModal() {
+            document.getElementById('importModal').classList.remove('active');
+        }
+
+        function importData() {
+            const file = document.getElementById('importFile').files[0];
+            if (!file) return alert('Select a file');
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (!Array.isArray(data)) throw new Error('Invalid format');
+
+                    const transaction = db.transaction(STORE_NAME, 'readwrite');
+                    const store = transaction.objectStore(STORE_NAME);
+
+                    data.forEach(item => store.put(item));
+
+                    transaction.oncomplete = () => {
+                        showSuccessMessage('Data imported!');
+                        closeImportModal();
+                        document.getElementById('importFile').value = '';
+                        loadLibrary();
+                    };
+                } catch (err) {
+                    alert('Invalid JSON file');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function showSuccessMessage(message) {
+            const el = document.getElementById('successMessage');
+            el.textContent = message;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        // Initialize
+        initDB();
+    </script>
+</body>
+</html>
