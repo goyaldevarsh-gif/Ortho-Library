@@ -10,8 +10,8 @@
     <meta name="apple-mobile-web-app-title" content="Ortho Library">
     
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23333333' width='192' height='192'/><text x='96' y='120' font-size='100' font-weight='bold' fill='white' text-anchor='middle' font-family='system-ui'>📚</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23ffffff' width='180' height='180' rx='40'/><text x='90' y='135' font-size='90' text-anchor='middle'>📚</text></svg>">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
     
     <title>Ortho Library</title>
     <style>
@@ -60,9 +60,10 @@
         }
 
         h1 {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             letter-spacing: -0.5px;
+            margin: 0;
         }
 
         .header-actions {
@@ -292,6 +293,38 @@
             flex: 1;
         }
 
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #333;
+            border-bottom-color: #333;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .resource-section {
             margin-bottom: 30px;
         }
@@ -302,6 +335,32 @@
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 2px solid #333;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 8px;
+        }
+
+        .type-video {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .type-paper {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+
+        .type-note {
+            background: #e8f5e9;
+            color: #2e7d32;
         }
 
         .resource-item {
@@ -505,13 +564,48 @@
         .export-menu button:hover {
             background: #f5f5f5;
         }
+
+        .update-banner {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 999;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .update-banner.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
         <header>
             <div class="header-content">
-                <h1>📚 Ortho Library</h1>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <img src="icon-192.png" alt="Ortho Library" style="width: 48px; height: 48px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div>
+                        <h1 style="margin: 0; font-size: 24px;">Ortho Library</h1>
+                        <p style="margin: 0; font-size: 12px; color: #666; font-weight: 500;">Papers. Videos. Notes.</p>
+                    </div>
+                </div>
                 <div class="header-actions">
                     <button onclick="openAddModal()">+ Add</button>
                     <button class="secondary" onclick="toggleExportMenu()">Export</button>
@@ -555,6 +649,13 @@
 
                 <div class="stats" id="statsContainer"></div>
 
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('all')">📚 All</button>
+                    <button class="tab" onclick="switchTab('video')">🎥 Videos</button>
+                    <button class="tab" onclick="switchTab('paper')">📄 Papers</button>
+                    <button class="tab" onclick="switchTab('note')">📝 Notes</button>
+                </div>
+
                 <div class="library-container">
                     <div class="sidebar">
                         <div class="sidebar-section">
@@ -583,13 +684,27 @@
             <div class="modal-header" id="modalTitle">Add Resource</div>
             <form onsubmit="saveResource(event)">
                 <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" id="resourceTitle" required>
+                    <label>Type</label>
+                    <select id="resourceType" required onchange="updateFormForType()">
+                        <option value="">Select Type</option>
+                        <option value="video">🎥 Video</option>
+                        <option value="paper">📄 Paper</option>
+                        <option value="note">📝 Note</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
                     <label>Link</label>
-                    <input type="url" id="resourceLink" required>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="url" id="resourceLink" placeholder="https://...">
+                        <button type="button" onclick="extractMetadata()" style="padding: 10px 12px; white-space: nowrap; background: #666;">Extract</button>
+                    </div>
+                    <small style="color: #666; margin-top: 4px; display: block;">Leave empty for notes</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="resourceTitle" required>
                 </div>
 
                 <div class="form-group">
@@ -663,6 +778,11 @@
         <button onclick="exportAsCSV()">📊 Export as CSV</button>
     </div>
 
+    <!-- Update Banner -->
+    <div id="updateBanner" class="update-banner">
+        <strong>✨ Updates applied!</strong> App refreshed with latest changes.
+    </div>
+
     <script>
         const DB_NAME = 'OrthoLibrary';
         const STORE_NAME = 'resources';
@@ -671,12 +791,44 @@
         let currentRating = 0;
         let deferredPrompt;
         let installPromptShown = false;
+        let currentTab = 'all';
 
-        // Service Worker Registration
+        // Service Worker Registration with Update Detection
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
-                .then(reg => console.log('Service Worker registered'))
-                .catch(err => console.log('Service Worker registration failed'));
+                .then(reg => {
+                    console.log('[App] Service Worker registered');
+                    
+                    // Check for updates every 30 seconds
+                    setInterval(() => {
+                        reg.update().catch(err => console.log('[App] Update check failed'));
+                    }, 30000);
+                    
+                    // Listen for updates
+                    reg.addEventListener('updatefound', () => {
+                        console.log('[App] Update found!');
+                        const newWorker = reg.installing;
+                        
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('[App] New version available, refreshing...');
+                                // Auto reload after small delay to ensure SW is ready
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 500);
+                            }
+                        });
+                    });
+                })
+                .catch(err => console.log('[App] Service Worker registration failed'));
+            
+            // Listen for messages from service worker
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data.type === 'CACHE_UPDATED') {
+                    console.log(`[App] Cache updated to version ${event.data.version}`);
+                    window.location.reload();
+                }
+            });
         }
 
         // Install Prompt
@@ -725,6 +877,93 @@
             };
         }
 
+        // Tab switching
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            loadLibrary();
+        }
+
+        // Update form based on resource type
+        function updateFormForType() {
+            const type = document.getElementById('resourceType').value;
+            const linkInput = document.getElementById('resourceLink').parentElement.parentElement;
+            
+            if (type === 'note') {
+                linkInput.style.display = 'none';
+                document.getElementById('resourceLink').value = '';
+                document.getElementById('resourceLink').required = false;
+            } else {
+                linkInput.style.display = 'block';
+                document.getElementById('resourceLink').required = true;
+            }
+        }
+
+        // Auto-extract metadata from URL
+        async function extractMetadata() {
+            const link = document.getElementById('resourceLink').value.trim();
+            if (!link) return alert('Enter a URL first');
+
+            const btn = event.target;
+            btn.textContent = 'Extracting...';
+            btn.disabled = true;
+
+            try {
+                // Try to fetch page metadata
+                const response = await fetch(link, { 
+                    method: 'GET',
+                    headers: { 'Accept': 'text/html' }
+                }).catch(() => null);
+
+                if (response && response.ok) {
+                    const html = await response.text();
+                    let title = extractTitle(html, link);
+                    
+                    if (title) {
+                        document.getElementById('resourceTitle').value = title;
+                    } else {
+                        // Fallback: use URL
+                        document.getElementById('resourceTitle').value = new URL(link).hostname;
+                    }
+                } else {
+                    // Extract from URL
+                    document.getElementById('resourceTitle').value = new URL(link).hostname;
+                }
+            } catch (err) {
+                // Fallback: extract from URL
+                try {
+                    document.getElementById('resourceTitle').value = new URL(link).hostname;
+                } catch {
+                    alert('Invalid URL');
+                }
+            }
+
+            btn.textContent = 'Extract';
+            btn.disabled = false;
+        }
+
+        // Parse HTML to extract title
+        function extractTitle(html, url) {
+            // Try Open Graph title
+            let match = html.match(/<meta\s+property=["']og:title["']\s+content=["']([^"']+)/i);
+            if (match) return match[1];
+
+            // Try Twitter title
+            match = html.match(/<meta\s+name=["']twitter:title["']\s+content=["']([^"']+)/i);
+            if (match) return match[1];
+
+            // Try regular title tag
+            match = html.match(/<title>([^<]+)<\/title>/i);
+            if (match) return match[1];
+
+            // Try h1
+            match = html.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+            if (match) return match[1];
+
+            return null;
+        }
+
         // Load and display library
         function loadLibrary() {
             const transaction = db.transaction(STORE_NAME, 'readonly');
@@ -748,8 +987,26 @@
                 spine: 'Spine'
             };
 
+            const typeIcons = {
+                video: '🎥',
+                paper: '📄',
+                note: '📝'
+            };
+
+            const typeLabels = {
+                video: 'Video',
+                paper: 'Paper',
+                note: 'Note'
+            };
+
+            // Filter by current tab
+            let filtered = resources;
+            if (currentTab !== 'all') {
+                filtered = resources.filter(r => r.type === currentTab);
+            }
+
             const grouped = {};
-            resources.forEach(r => {
+            filtered.forEach(r => {
                 if (!grouped[r.region]) grouped[r.region] = [];
                 grouped[r.region].push(r);
             });
@@ -760,10 +1017,17 @@
                     <div class="section-title">${regionMap[region]} (${grouped[region].length})</div>`;
                 
                 grouped[region].forEach(r => {
+                    const typeIcon = typeIcons[r.type] || '📌';
+                    const typeLabel = typeLabels[r.type] || 'Resource';
+                    const typeBadgeClass = `type-badge type-${r.type}`;
+                    
                     html += `
                         <div class="resource-item">
-                            <div class="resource-title">${r.title}</div>
-                            <a href="${r.link}" target="_blank" class="resource-link">${r.link}</a>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="${typeBadgeClass}">${typeLabel}</span>
+                                <div class="resource-title">${r.title}</div>
+                            </div>
+                            ${r.link ? `<a href="${r.link}" target="_blank" class="resource-link">${r.link}</a>` : ''}
                             <div class="resource-meta">
                                 <span><strong>Domain:</strong> ${r.domain}</span>
                                 <span class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
@@ -785,14 +1049,29 @@
         // Update statistics
         function updateStats(resources) {
             const regionCounts = {};
+            const typeCounts = { video: 0, paper: 0, note: 0 };
+            
             resources.forEach(r => {
                 regionCounts[r.region] = (regionCounts[r.region] || 0) + 1;
+                if (r.type) typeCounts[r.type]++;
             });
 
             let statsHtml = `
                 <div class="stat-card">
                     <div class="stat-number">${resources.length}</div>
-                    <div class="stat-label">Total Resources</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${typeCounts.video}</div>
+                    <div class="stat-label">🎥 Videos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${typeCounts.paper}</div>
+                    <div class="stat-label">📄 Papers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${typeCounts.note}</div>
+                    <div class="stat-label">📝 Notes</div>
                 </div>`;
 
             Object.entries(regionCounts).forEach(([region, count]) => {
@@ -839,6 +1118,7 @@
         function openAddModal() {
             editingId = null;
             document.getElementById('modalTitle').textContent = 'Add Resource';
+            document.getElementById('resourceType').value = '';
             document.getElementById('resourceTitle').value = '';
             document.getElementById('resourceLink').value = '';
             document.getElementById('resourceRegion').value = '';
@@ -846,6 +1126,7 @@
             document.getElementById('resourceNotes').value = '';
             currentRating = 0;
             updateStarDisplay();
+            updateFormForType();
             document.getElementById('resourceModal').classList.add('active');
         }
 
@@ -859,13 +1140,15 @@
                 const resource = request.result;
                 editingId = id;
                 document.getElementById('modalTitle').textContent = 'Edit Resource';
+                document.getElementById('resourceType').value = resource.type || 'video';
                 document.getElementById('resourceTitle').value = resource.title;
-                document.getElementById('resourceLink').value = resource.link;
+                document.getElementById('resourceLink').value = resource.link || '';
                 document.getElementById('resourceRegion').value = resource.region;
                 document.getElementById('resourceDomain').value = resource.domain;
                 document.getElementById('resourceNotes').value = resource.notes;
                 currentRating = resource.rating;
                 updateStarDisplay();
+                updateFormForType();
                 document.getElementById('resourceModal').classList.add('active');
             };
         }
@@ -887,10 +1170,14 @@
         function saveResource(event) {
             event.preventDefault();
 
+            const type = document.getElementById('resourceType').value;
+            if (!type) return alert('Select resource type');
+
             const resource = {
                 id: editingId || Date.now().toString(),
+                type: type,
                 title: document.getElementById('resourceTitle').value,
-                link: document.getElementById('resourceLink').value,
+                link: document.getElementById('resourceLink').value || '',
                 region: document.getElementById('resourceRegion').value,
                 domain: document.getElementById('resourceDomain').value,
                 notes: document.getElementById('resourceNotes').value,
@@ -1027,6 +1314,28 @@
             el.classList.add('show');
             setTimeout(() => el.classList.remove('show'), 3000);
         }
+
+        // Show update banner
+        function showUpdateBanner() {
+            const banner = document.getElementById('updateBanner');
+            if (banner) {
+                banner.classList.add('show');
+                setTimeout(() => {
+                    banner.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Detect when page was refreshed
+        window.addEventListener('load', () => {
+            const isRefresh = performance.navigation.type === 1 || 
+                            (performance.getEntriesByType('navigation')[0]?.type === 'reload');
+            
+            if (isRefresh) {
+                console.log('[App] Page refreshed - changes applied!');
+                showUpdateBanner();
+            }
+        });
 
         // Initialize
         initDB();

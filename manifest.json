@@ -1,38 +1,51 @@
 {
   "name": "Ortho Library - Surgical Knowledge Hub",
   "short_name": "Ortho Library",
-  "description": "Your personal surgical knowledge hub. Organize videos, papers and resources by region and specialty.",
+  "description": "Papers. Videos. Notes. One Library. Your personal surgical knowledge hub organized by region and specialty.",
   "start_url": "/ortho-library/",
   "scope": "/ortho-library/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#333333",
+  "theme_color": "#1a1a1a",
   "background_color": "#ffffff",
-  "categories": ["medical", "productivity"],
+  "categories": ["medical", "productivity", "education"],
   "screenshots": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23f5f5f5' width='540' height='720'/><rect fill='%23ffffff' width='540' height='80'/><text x='270' y='50' font-size='24' font-weight='bold' text-anchor='middle' font-family='system-ui' fill='%23333'>Ortho Library</text><rect fill='%23ffffff' y='100' width='540' height='100' fill-opacity='0.5'/><text x='20' y='150' font-size='14' font-weight='bold' font-family='system-ui' fill='%23333'>Resources</text><rect fill='%23ffffff' y='220' width='540' height='60' fill-opacity='0.3'/><text x='20' y='250' font-size='12' font-family='system-ui' fill='%23666'>Video: ACL Reconstruction Technique</text></svg>",
-      "sizes": "540x720",
-      "type": "image/svg+xml"
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "form_factor": "narrow"
     }
   ],
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23333333' width='192' height='192' rx='45'/><text x='96' y='140' font-size='110' text-anchor='middle'>📚</text></svg>",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%23333333' width='512' height='512' rx='120'/><text x='256' y='370' font-size='280' text-anchor='middle'>📚</text></svg>",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23ffffff' width='192' height='192' rx='45'/><rect fill='%23333333' width='192' height='192' rx='45' fill-opacity='0.1'/><text x='96' y='140' font-size='110' text-anchor='middle'>📚</text></svg>",
-      "sizes": "192x192",
-      "type": "image/svg+xml",
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],

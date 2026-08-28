@@ -1,4 +1,8 @@
-const CACHE_NAME = 'ortho-library-v1';
+// Version control - INCREMENT THIS WHEN YOU MAKE CHANGES
+// Each time you update index.html, increment this number
+// Service worker will auto-detect and reload
+const CACHE_VERSION = 2;
+const CACHE_NAME = `ortho-library-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/ortho-library/',
   '/ortho-library/index.html',
@@ -7,25 +11,30 @@ const urlsToCache = [
 
 // Install Service Worker
 self.addEventListener('install', event => {
+  console.log(`[SW] Installing version ${CACHE_VERSION}`);
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Cache opened');
+        console.log('[SW] Cache opened');
         return cache.addAll(urlsToCache).catch(err => {
-          console.log('Some resources failed to cache');
+          console.log('[SW] Some resources failed to cache');
         });
       })
   );
+  // Skip waiting - immediately activate new version
   self.skipWaiting();
 });
 
 // Activate Service Worker
 self.addEventListener('activate', event => {
+  console.log(`[SW] Activating version ${CACHE_VERSION}`);
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
+          // Delete old cache versions
           if (cacheName !== CACHE_NAME) {
+            console.log(`[SW] Deleting old cache: ${cacheName}`);
             return caches.delete(cacheName);
           }
         })
@@ -33,6 +42,16 @@ self.addEventListener('activate', event => {
     })
   );
   self.clients.claim();
+  
+  // Notify all clients of update
+  self.clients.matchAll().then(clients => {
+    clients.forEach(client => {
+      client.postMessage({
+        type: 'CACHE_UPDATED',
+        version: CACHE_VERSION
+      });
+    });
+  });
 });
 
 // Fetch Event - Network first, fallback to cache
