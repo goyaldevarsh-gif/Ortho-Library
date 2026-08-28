@@ -4,9 +4,9 @@
 const CACHE_VERSION = 2;
 const CACHE_NAME = `ortho-library-v${CACHE_VERSION}`;
 const urlsToCache = [
-  '/ortho-library/',
-  '/ortho-library/index.html',
-  '/ortho-library/manifest.json'
+  '/Ortho-Library/',
+  '/Ortho-Library/index.html',
+  '/Ortho-Library/manifest.json'
 ];
 
 // Install Service Worker
