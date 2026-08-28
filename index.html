@@ -122,17 +122,38 @@
 
         .controls {
             background: #ffffff;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 14px;
+            margin-bottom: 14px;
             border-radius: 4px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .control-row {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
+        .search-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .filter-row select {
+            width: 100%;
+            min-width: 0;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+            background: #fff;
+            color: #1a1a1a;
         }
 
         input[type="text"], select {
@@ -142,15 +163,6 @@
             font-size: 14px;
             background: #fff;
             color: #1a1a1a;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        select {
-            min-width: 150px;
         }
 
         .modal {
@@ -248,73 +260,55 @@
             flex: 1;
         }
 
-        .library-container {
-            display: flex;
-            gap: 20px;
-        }
-
-        .sidebar {
-            width: 200px;
-        }
-
-        .sidebar-section {
-            margin-bottom: 25px;
-        }
-
-        .sidebar-title {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #666;
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
-        }
-
-        .sidebar-item {
-            padding: 8px 12px;
-            margin-bottom: 5px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-
-        .sidebar-item:hover {
-            background: #f0f0f0;
-        }
-
-        .sidebar-item.active {
-            background: #333;
-            color: #fff;
-            font-weight: 600;
-        }
-
-        .main-content-area {
-            flex: 1;
-        }
-
         .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ddd;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
         }
 
         .tab {
-            padding: 12px 20px;
-            background: none;
+            background: #fff;
             border: none;
+            border-radius: 6px;
+            padding: 10px 4px;
             cursor: pointer;
-            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            transition: all 0.15s;
+        }
+
+        .tab:hover {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tab-count {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .tab-label {
+            font-size: 10.5px;
             font-weight: 600;
-            color: #666;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
+            color: #777;
+            white-space: nowrap;
         }
 
         .tab.active {
-            color: #333;
-            border-bottom-color: #333;
+            background: #1a1a1a;
+        }
+
+        .tab.active .tab-count {
+            color: #fff;
+        }
+
+        .tab.active .tab-label {
+            color: #ddd;
         }
 
         .tab-content {
@@ -365,22 +359,67 @@
 
         .resource-item {
             background: #fff;
-            padding: 16px;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
             border-radius: 4px;
             border-left: 4px solid #333;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: box-shadow 0.15s;
         }
 
         .resource-item:hover {
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
+        .resource-header-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+        }
+
+        .resource-header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            flex: 1;
+        }
+
         .resource-title {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
-            margin-bottom: 8px;
-            word-break: break-word;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .resource-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .expand-arrow {
+            color: #999;
+            font-size: 12px;
+            transition: transform 0.2s;
+        }
+
+        .resource-item.expanded .expand-arrow {
+            transform: rotate(180deg);
+        }
+
+        .resource-details {
+            display: none;
+            padding: 0 12px 12px 12px;
+            border-top: 1px solid #eee;
+        }
+
+        .resource-item.expanded .resource-details {
+            display: block;
+            padding-top: 10px;
         }
 
         .resource-link {
@@ -450,33 +489,6 @@
             margin-bottom: 15px;
         }
 
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: #fff;
-            padding: 15px;
-            border-radius: 4px;
-            text-align: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-
-        .stat-number {
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-
         .install-prompt {
             background: #e3f2fd;
             border-left: 4px solid #2196F3;
@@ -501,28 +513,21 @@
         }
 
         @media (max-width: 768px) {
-            .library-container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                display: flex;
-                gap: 20px;
-                overflow-x: auto;
-            }
-
             .header-content {
                 flex-direction: column;
                 gap: 15px;
             }
 
-            .control-row {
-                flex-direction: column;
+            .container {
+                padding: 12px;
             }
 
-            input[type="text"] {
-                min-width: 100%;
+            .tab-count {
+                font-size: 16px;
+            }
+
+            .tab-label {
+                font-size: 9.5px;
             }
 
             h1 {
@@ -624,8 +629,8 @@
                 <div class="success-message" id="successMessage"></div>
 
                 <div class="controls">
-                    <div class="control-row">
-                        <input type="text" id="searchInput" placeholder="Search resources..." onkeyup="filterResources()">
+                    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search resources..." onkeyup="filterResources()">
+                    <div class="filter-row">
                         <select id="regionFilter" onchange="filterResources()">
                             <option value="">All Regions</option>
                             <option value="knee">Knee</option>
@@ -647,33 +652,26 @@
                     </div>
                 </div>
 
-                <div class="stats" id="statsContainer"></div>
-
                 <div class="tabs">
-                    <button class="tab active" onclick="switchTab('all')">📚 All</button>
-                    <button class="tab" onclick="switchTab('video')">🎥 Videos</button>
-                    <button class="tab" onclick="switchTab('paper')">📄 Papers</button>
-                    <button class="tab" onclick="switchTab('note')">📝 Notes</button>
+                    <button class="tab active" onclick="switchTab('all')">
+                        <span class="tab-count" id="countAll">0</span>
+                        <span class="tab-label">📚 All</span>
+                    </button>
+                    <button class="tab" onclick="switchTab('video')">
+                        <span class="tab-count" id="countVideo">0</span>
+                        <span class="tab-label">🎥 Videos</span>
+                    </button>
+                    <button class="tab" onclick="switchTab('paper')">
+                        <span class="tab-count" id="countPaper">0</span>
+                        <span class="tab-label">📄 Papers</span>
+                    </button>
+                    <button class="tab" onclick="switchTab('note')">
+                        <span class="tab-count" id="countNote">0</span>
+                        <span class="tab-label">📝 Notes</span>
+                    </button>
                 </div>
 
-                <div class="library-container">
-                    <div class="sidebar">
-                        <div class="sidebar-section">
-                            <div class="sidebar-title">Regions</div>
-                            <div class="sidebar-item" onclick="filterByRegion('')">All</div>
-                            <div class="sidebar-item" onclick="filterByRegion('knee')">Knee</div>
-                            <div class="sidebar-item" onclick="filterByRegion('shoulder')">Shoulder</div>
-                            <div class="sidebar-item" onclick="filterByRegion('hip')">Hip</div>
-                            <div class="sidebar-item" onclick="filterByRegion('ankle')">Ankle</div>
-                            <div class="sidebar-item" onclick="filterByRegion('wrist')">Wrist/Hand</div>
-                            <div class="sidebar-item" onclick="filterByRegion('spine')">Spine</div>
-                        </div>
-                    </div>
-
-                    <div class="main-content-area">
-                        <div id="libraryContent"></div>
-                    </div>
-                </div>
+                <div id="libraryContent"></div>
             </div>
         </div>
     </div>
@@ -900,68 +898,60 @@
             }
         }
 
-        // Auto-extract metadata from URL
+        // Auto-extract metadata from URL (using CORS-safe public APIs)
         async function extractMetadata() {
             const link = document.getElementById('resourceLink').value.trim();
             if (!link) return alert('Enter a URL first');
+
+            let url;
+            try {
+                url = new URL(link);
+            } catch {
+                return alert('Invalid URL — make sure it starts with https://');
+            }
 
             const btn = event.target;
             btn.textContent = 'Extracting...';
             btn.disabled = true;
 
-            try {
-                // Try to fetch page metadata
-                const response = await fetch(link, { 
-                    method: 'GET',
-                    headers: { 'Accept': 'text/html' }
-                }).catch(() => null);
+            let title = await tryNoembed(link);
+            if (!title) title = await tryMicrolink(link);
 
-                if (response && response.ok) {
-                    const html = await response.text();
-                    let title = extractTitle(html, link);
-                    
-                    if (title) {
-                        document.getElementById('resourceTitle').value = title;
-                    } else {
-                        // Fallback: use URL
-                        document.getElementById('resourceTitle').value = new URL(link).hostname;
-                    }
-                } else {
-                    // Extract from URL
-                    document.getElementById('resourceTitle').value = new URL(link).hostname;
-                }
-            } catch (err) {
-                // Fallback: extract from URL
-                try {
-                    document.getElementById('resourceTitle').value = new URL(link).hostname;
-                } catch {
-                    alert('Invalid URL');
-                }
+            if (title) {
+                document.getElementById('resourceTitle').value = title;
+            } else {
+                document.getElementById('resourceTitle').value = url.hostname.replace('www.', '');
+                alert('Couldn\'t auto-fetch the title (site blocks it). Filled hostname instead — please edit the title manually.');
             }
 
             btn.textContent = 'Extract';
             btn.disabled = false;
         }
 
-        // Parse HTML to extract title
-        function extractTitle(html, url) {
-            // Try Open Graph title
-            let match = html.match(/<meta\s+property=["']og:title["']\s+content=["']([^"']+)/i);
-            if (match) return match[1];
+        // Try noembed.com — works great for YouTube, Vimeo, Twitter, etc.
+        async function tryNoembed(link) {
+            try {
+                const res = await fetch(`https://noembed.com/embed?url=${encodeURIComponent(link)}&format=json`);
+                if (!res.ok) return null;
+                const data = await res.json();
+                if (data && data.title && !data.error) return data.title;
+                return null;
+            } catch {
+                return null;
+            }
+        }
 
-            // Try Twitter title
-            match = html.match(/<meta\s+name=["']twitter:title["']\s+content=["']([^"']+)/i);
-            if (match) return match[1];
-
-            // Try regular title tag
-            match = html.match(/<title>([^<]+)<\/title>/i);
-            if (match) return match[1];
-
-            // Try h1
-            match = html.match(/<h1[^>]*>([^<]+)<\/h1>/i);
-            if (match) return match[1];
-
-            return null;
+        // Fallback: microlink.io — works for most general web pages/papers
+        async function tryMicrolink(link) {
+            try {
+                const res = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(link)}`);
+                if (!res.ok) return null;
+                const json = await res.json();
+                if (json.status === 'success' && json.data && json.data.title) return json.data.title;
+                return null;
+            } catch {
+                return null;
+            }
         }
 
         // Load and display library
@@ -1022,20 +1012,27 @@
                     const typeBadgeClass = `type-badge type-${r.type}`;
                     
                     html += `
-                        <div class="resource-item">
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <span class="${typeBadgeClass}">${typeLabel}</span>
-                                <div class="resource-title">${r.title}</div>
+                        <div class="resource-item" onclick="this.classList.toggle('expanded')">
+                            <div class="resource-header-row">
+                                <div class="resource-header-left">
+                                    <span class="${typeBadgeClass}">${typeIcon}</span>
+                                    <span class="resource-title">${r.title}</span>
+                                </div>
+                                <div class="resource-header-right">
+                                    <span class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+                                    <span class="expand-arrow">▾</span>
+                                </div>
                             </div>
-                            ${r.link ? `<a href="${r.link}" target="_blank" class="resource-link">${r.link}</a>` : ''}
-                            <div class="resource-meta">
-                                <span><strong>Domain:</strong> ${r.domain}</span>
-                                <span class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
-                            </div>
-                            ${r.notes ? `<div class="resource-notes"><strong>Notes:</strong> ${r.notes}</div>` : ''}
-                            <div class="resource-actions">
-                                <button onclick="editResource('${r.id}')">Edit</button>
-                                <button onclick="deleteResource('${r.id}')">Delete</button>
+                            <div class="resource-details">
+                                <div class="resource-meta">
+                                    <span><strong>Domain:</strong> ${r.domain}</span>
+                                </div>
+                                ${r.link ? `<a href="${r.link}" target="_blank" class="resource-link" onclick="event.stopPropagation()">${r.link}</a>` : ''}
+                                ${r.notes ? `<div class="resource-notes"><strong>Notes:</strong> ${r.notes}</div>` : ''}
+                                <div class="resource-actions">
+                                    <button onclick="event.stopPropagation(); editResource('${r.id}')">Edit</button>
+                                    <button onclick="event.stopPropagation(); deleteResource('${r.id}')">Delete</button>
+                                </div>
                             </div>
                         </div>`;
                 });
@@ -1046,44 +1043,17 @@
             document.getElementById('libraryContent').innerHTML = html || '<div class="empty-state"><p>No resources yet. Add your first resource!</p></div>';
         }
 
-        // Update statistics
+        // Update tab counts (Videos/Papers/Notes/All)
         function updateStats(resources) {
-            const regionCounts = {};
             const typeCounts = { video: 0, paper: 0, note: 0 };
-            
             resources.forEach(r => {
-                regionCounts[r.region] = (regionCounts[r.region] || 0) + 1;
                 if (r.type) typeCounts[r.type]++;
             });
 
-            let statsHtml = `
-                <div class="stat-card">
-                    <div class="stat-number">${resources.length}</div>
-                    <div class="stat-label">Total</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${typeCounts.video}</div>
-                    <div class="stat-label">🎥 Videos</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${typeCounts.paper}</div>
-                    <div class="stat-label">📄 Papers</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${typeCounts.note}</div>
-                    <div class="stat-label">📝 Notes</div>
-                </div>`;
-
-            Object.entries(regionCounts).forEach(([region, count]) => {
-                const regionMap = {knee: 'Knee', shoulder: 'Shoulder', hip: 'Hip', ankle: 'Ankle', wrist: 'Wrist', spine: 'Spine'};
-                statsHtml += `
-                    <div class="stat-card">
-                        <div class="stat-number">${count}</div>
-                        <div class="stat-label">${regionMap[region]}</div>
-                    </div>`;
-            });
-
-            document.getElementById('statsContainer').innerHTML = statsHtml;
+            document.getElementById('countAll').textContent = resources.length;
+            document.getElementById('countVideo').textContent = typeCounts.video;
+            document.getElementById('countPaper').textContent = typeCounts.paper;
+            document.getElementById('countNote').textContent = typeCounts.note;
         }
 
         // Filter resources
@@ -1106,12 +1076,6 @@
 
                 displayLibrary(resources);
             };
-        }
-
-        // Filter by sidebar region
-        function filterByRegion(region) {
-            document.getElementById('regionFilter').value = region;
-            filterResources();
         }
 
         // Open add modal

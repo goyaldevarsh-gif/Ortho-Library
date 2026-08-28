@@ -1,7 +1,7 @@
 // Version control - INCREMENT THIS WHEN YOU MAKE CHANGES
 // Each time you update index.html, increment this number
 // Service worker will auto-detect and reload
-const CACHE_VERSION = 2;
+const CACHE_VERSION = 4;
 const CACHE_NAME = `ortho-library-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/Ortho-Library/',
